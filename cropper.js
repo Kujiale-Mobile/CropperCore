@@ -21,7 +21,7 @@ Component({
     /**
      * 图片基于的显示区域高度，从顶部开始，px
      */
-    'valid_height': {
+    'validHeight': {
       type: Number,
       value: 0,
     },
@@ -175,6 +175,14 @@ Component({
       },
       cut_left(value, that) {
         that._cutDetectionPosition();
+      },
+      validHeight(value, that) {
+        if (!value) {
+          value = this.data.info.windowHeight;
+        }
+        that.setData({
+          _img_top: value / 2
+        })
       }
     }
   },
@@ -192,10 +200,10 @@ Component({
     this.data.min_width = MIN_FRAME_WIDTH_RPX * this.data.info.windowWidth / 750;
     this.data.min_height = this.data.min_width / this.data.cut_frame_ratio;
     
-    if (!this.data.valid_height) {
-      this.data.valid_height = this.data.info.windowHeight;
+    if (!this.data.validHeight) {
+      this.data.validHeight = this.data.info.windowHeight;
     }
-    this.data._img_top = this.data.valid_height / 2;
+    this.data._img_top = this.data.validHeight / 2;
 
     this.setData({
       height: HEIGHT_PX,
@@ -306,7 +314,7 @@ Component({
      * 设置剪裁框和图片居中
      */
     setCutCenter() {
-      let cut_top = (this.data.valid_height - HEIGHT_PX) * 0.5;
+      let cut_top = (this.data.validHeight - HEIGHT_PX) * 0.5;
       let cut_left = (this.data.info.windowWidth - WIDTH_PX) * 0.5;
 
       const updateData = {
@@ -367,7 +375,7 @@ Component({
       this.setData(updateData);
     },
     _setCutCenter() {
-      let cut_top = (this.data.valid_height - this.data.height) * 0.5;
+      let cut_top = (this.data.validHeight - this.data.height) * 0.5;
       let cut_left = (this.data.info.windowWidth - this.data.width) * 0.5;
       this.setData({
         cut_top: cut_top, //截取的框上边距
@@ -488,9 +496,9 @@ Component({
               cut_top: 0
             });
           }
-          if (this.data.cut_top > this.data.valid_height - this.data.height) {
+          if (this.data.cut_top > this.data.validHeight - this.data.height) {
             this.setData({
-              cut_top: this.data.valid_height - this.data.height
+              cut_top: this.data.validHeight - this.data.height
             });
           }
         },
@@ -521,7 +529,7 @@ Component({
       } else if (this.data.cut_top == null && this.data.cut_left != null) {
         _cutDetectionPositionLeft();
         this.setData({
-          cut_top: (this.data.valid_height - this.data.height) / 2
+          cut_top: (this.data.validHeight - this.data.height) / 2
         });
       }
     },
@@ -969,7 +977,7 @@ Component({
           watchFun && watchFun(val, this);
         },
         get() {
-          if (val && '_img_top|img_left||width|height|min_width|max_width|min_height|max_height|export_scale|cut_top|cut_left|canvas_top|canvas_left|img_width|img_height|scale|angle|min_scale|max_scale'.indexOf(key) != -1) {
+          if (val && '_img_top|img_left||width|height|min_width|max_width|min_height|max_height|export_scale|cut_top|cut_left|canvas_top|canvas_left|img_width|img_height|scale|angle|validHeight'.indexOf(key) != -1) {
             let ret = parseFloat(parseFloat(val).toFixed(3));
             if (typeof val == "string" && val.indexOf("%") != -1) {
               ret += '%';
