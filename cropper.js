@@ -183,6 +183,7 @@ Component({
         that.setData({
           _img_top: value / 2
         })
+        that._setCutCenter();
       }
     }
   },
