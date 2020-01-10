@@ -422,12 +422,14 @@ Component({
           const updateData = {}
           if (width > height) {
             // 高撑满
+            this.data.image_ratio = HEIGHT_PX / res.height;
             Object.assign(updateData, {
               img_height: HEIGHT_PX,
               img_width: res.width * HEIGHT_PX / res.height,
             })
           } else {
             // 框撑满
+            this.data.image_ratio = WIDTH_PX / res.width;
             Object.assign(updateData, {
               img_width: WIDTH_PX,
               img_height: res.height * WIDTH_PX / res.width,
@@ -751,10 +753,10 @@ Component({
       const realW = parseInt(this.data.width / this.data.scale);
       const realH = parseInt(this.data.height / this.data.scale);
       return {
-        x: realX,
-        y: realY,
-        width: realW,
-        height: realH
+        x: realX * this.data.image_ratio,
+        y: realY * this.data.image_ratio,
+        width: realW * this.data.image_ratio,
+        height: realH * this.data.image_ratio
       };
     },
 
