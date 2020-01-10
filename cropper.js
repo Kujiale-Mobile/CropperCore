@@ -382,24 +382,7 @@ Component({
         cut_left: cut_left, //截取的框左边距
       });
     },
-    /**
-     * 设置剪裁框宽度-即将废弃
-     */
-    setWidth(width) {
-      this.setData({
-        width: width
-      });
-      this._computeCutSize();
-    },
-    /**
-     * 设置剪裁框高度-即将废弃
-     */
-    setHeight(height) {
-      this.setData({
-        height: height
-      });
-      this._computeCutSize();
-    },
+
     /**
      * 是否锁定旋转
      */
@@ -434,9 +417,20 @@ Component({
       wx.getImageInfo({
         src: this.data.imgSrc,
         success: (res) => {
-          const updateData = {
-            img_width: res.width,
-            img_height: res.height,
+          const {height, width} = res;
+          const updateData = {}
+          if (width > height) {
+            // 高撑满
+            Object.assign(updateData, {
+              img_height: HEIGHT_PX,
+              img_width: res.width * HEIGHT_PX / res.height,
+            })
+          } else {
+            // 框撑满
+            Object.assign(updateData, {
+              img_width: WIDTH_PX,
+              img_height: res.height * WIDTH_PX / res.width,
+            })
           }
 
           //图片非本地路径需要换成本地路径
@@ -740,6 +734,27 @@ Component({
       const realH = parseInt(this.data.height / this.data.scale);
 
       console.log('real', realX, realY, realW, realH);
+    },
+
+    getResult() {
+      let relativeX = this.data.cut_left - (this.data._img_left - this.data.img_width * this.data.scale / 2);
+      let relativeY = this.data.cut_top - (this.data._img_top - this.data.img_height * this.data.scale / 2);
+      if (relativeX < 0) {
+        relativeX = 0;
+      }
+      if (relativeY < 0) {
+        relativeY = 0;
+      }
+      const realX = parseInt(relativeX / this.data.scale);
+      const realY = parseInt(relativeY / this.data.scale);
+      const realW = parseInt(this.data.width / this.data.scale);
+      const realH = parseInt(this.data.height / this.data.scale);
+      return {
+        x: realX,
+        y: realY,
+        width: realW,
+        height: realH
+      };
     },
 
     //裁剪框处理
