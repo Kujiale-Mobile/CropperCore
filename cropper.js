@@ -190,6 +190,13 @@ Component({
       },
       initShow(value, that) {
         that.setData(value);
+      },
+      cutFrameRatio: (value, that) => {
+        HEIGHT_PX = WIDTH_PX / value;
+        that.setData({
+          min_height: that.data.min_width / value,
+          height: HEIGHT_PX
+        })
       }
     }
   },
