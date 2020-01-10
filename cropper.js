@@ -14,7 +14,7 @@ Component({
     /**
      * 裁剪框 宽 / 高
      */
-    'cut_frame_ratio': {
+    'cutFrameRatio': {
       type: Number,
       value: 1
     },
@@ -24,6 +24,9 @@ Component({
     'validHeight': {
       type: Number,
       value: 0,
+    },
+    'initShow': {
+      type: Object,
     },
     /**
      * 裁剪框禁止拖动
@@ -184,6 +187,9 @@ Component({
           _img_top: value / 2
         })
         that._setCutCenter();
+      },
+      initShow(value, that) {
+        that.setData(value);
       }
     }
   },
@@ -192,14 +198,14 @@ Component({
     //启用数据监听
     this._watcher();
     WIDTH_PX = this.data.info.windowWidth * WIDTH_RPX / 750;
-    HEIGHT_PX = WIDTH_PX / this.data.cut_frame_ratio;
+    HEIGHT_PX = WIDTH_PX / this.data.cutFrameRatio;
 
     this.data.height = HEIGHT_PX;
     this.data.width = WIDTH_PX;
     this.data.max_width = WIDTH_PX;
     this.data.max_height = HEIGHT_PX;
     this.data.min_width = MIN_FRAME_WIDTH_RPX * this.data.info.windowWidth / 750;
-    this.data.min_height = this.data.min_width / this.data.cut_frame_ratio;
+    this.data.min_height = this.data.min_width / this.data.cutFrameRatio;
     
     if (!this.data.validHeight) {
       this.data.validHeight = this.data.info.windowHeight;
@@ -718,7 +724,12 @@ Component({
         x: realX,
         y: realY,
         width: realW,
-        height: realH
+        height: realH,
+        initData: {
+          scale: this.data.scale,
+          _img_top: this.data._img_top,
+          _img_left: this.data._img_left
+        }
       };
     },
 
