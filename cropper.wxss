@@ -62,8 +62,8 @@
 .image-cropper-canvas{
   position: fixed;
   background: white;
-  width:150px;
-  height:150px;
+  width:300rpx;
+  height:300rpx;
   z-index: 10;
   top:-200%;
   pointer-events:none;
@@ -74,50 +74,50 @@
   position:absolute;
 }
 .border-top-left{
-  left:-2.5px;
-  top:-2.5px;
-  height:2.5px;
-  width:33rpx;
+  left:-6rpx;
+  top:-6rpx;
+  height:6rpx;
+  width:48rpx;
 }
 .border-top-right{
-  right:-2.5px;
-  top:-2.5px;
-  height:2.5px;
-  width:33rpx;
+  right:-6rpx;
+  top:-6rpx;
+  height:6rpx;
+  width:48rpx;
 }
 .border-right-top{
-  top:-1px;
-  width:2.5px;
-  height:30rpx;
-  right:-2.5px;
+  top:-6rpx;
+  width:6rpx;
+  height:48rpx;
+  right:-6rpx;
 }
 .border-right-bottom{
-  width:2.5px;
-  height:30rpx;
-  right:-2.5px;
-  bottom:-1px;
+  width:6rpx;
+  height:48rpx;
+  right:-6rpx;
+  bottom:-6rpx;
 }
 .border-bottom-left{
-  height:2.5px;
-  width:33rpx;
-  bottom:-2.5px;
-  left:-2.5px;
+  height:6rpx;
+  width:48rpx;
+  bottom:-6rpx;
+  left:-6rpx;
 }
 .border-bottom-right{
-  height:2.5px;
-  width:33rpx;
-  bottom:-2.5px;
-  right:-2.5px;
+  height:6rpx;
+  width:48rpx;
+  bottom:-6rpx;
+  right:-6rpx;
 }
 .border-left-top{
-  top:-1px;
-  width:2.5px;
-  height:30rpx;
-  left:-2.5px;
+  top:-6rpx;
+  width:6rpx;
+  height:48rpx;
+  left:-6rpx;
 }
 .border-left-bottom{
-  width:2.5px;
-  height:30rpx;
-  left:-2.5px;
-  bottom:-1px;
+  width:6rpx;
+  height:48rpx;
+  left:-6rpx;
+  bottom:-6rpx;
 }
