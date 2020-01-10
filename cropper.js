@@ -9,7 +9,7 @@ Component({
      * 图片路径
      */
     'imgSrc': {
-      type: String
+      type: String,
     },
     /**
      * 裁剪框 宽 / 高
@@ -223,22 +223,6 @@ Component({
   },
 
   methods: {
-
-    /**
-     * 上传图片
-     */
-    upload() {
-      let that = this;
-      wx.chooseImage({
-        count: 1,
-        sizeType: ['original', 'compressed'],
-        sourceType: ['album', 'camera'],
-        success(res) {
-          const tempFilePaths = res.tempFilePaths[0];
-          that.pushImg(tempFilePaths);
-        }
-      })
-    },
 
     /**
      * 设置图片动画
@@ -715,28 +699,6 @@ Component({
     _end(event) {
       this.data._flag_img_endtouch = true;
       this._moveStop();
-    },
-    //点击中间剪裁框处理
-    _click(event) {
-      if (!this.data.imgSrc) {
-        //调起上传
-        this.upload();
-        return;
-      }
-      let relativeX = this.data.cut_left - (this.data._img_left - this.data.img_width * this.data.scale / 2);
-      let relativeY = this.data.cut_top - (this.data._img_top - this.data.img_height * this.data.scale / 2);
-      if (relativeX < 0) {
-        relativeX = 0;
-      }
-      if (relativeY < 0) {
-        relativeY = 0;
-      }
-      const realX = parseInt(relativeX / this.data.scale);
-      const realY = parseInt(relativeY / this.data.scale);
-      const realW = parseInt(this.data.width / this.data.scale);
-      const realH = parseInt(this.data.height / this.data.scale);
-
-      console.log('real', realX, realY, realW, realH);
     },
 
     getResult() {
