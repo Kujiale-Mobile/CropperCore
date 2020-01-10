@@ -422,14 +422,14 @@ Component({
           const updateData = {}
           if (width > height) {
             // 高撑满
-            this.data.image_ratio = HEIGHT_PX / res.height;
+            this.data.image_ratio = res.height / HEIGHT_PX;
             Object.assign(updateData, {
               img_height: HEIGHT_PX,
               img_width: res.width * HEIGHT_PX / res.height,
             })
           } else {
             // 框撑满
-            this.data.image_ratio = WIDTH_PX / res.width;
+            this.data.image_ratio = res.width / WIDTH_PX;
             Object.assign(updateData, {
               img_width: WIDTH_PX,
               img_height: res.height * WIDTH_PX / res.width,
@@ -748,15 +748,15 @@ Component({
       if (relativeY < 0) {
         relativeY = 0;
       }
-      const realX = parseInt(relativeX / this.data.scale);
-      const realY = parseInt(relativeY / this.data.scale);
-      const realW = parseInt(this.data.width / this.data.scale);
-      const realH = parseInt(this.data.height / this.data.scale);
+      const realX = parseInt(relativeX * this.data.image_ratio / this.data.scale);
+      const realY = parseInt(relativeY * this.data.image_ratio / this.data.scale);
+      const realW = parseInt(this.data.width * this.data.image_ratio / this.data.scale);
+      const realH = parseInt(this.data.height * this.data.image_ratio / this.data.scale);
       return {
-        x: realX * this.data.image_ratio,
-        y: realY * this.data.image_ratio,
-        width: realW * this.data.image_ratio,
-        height: realH * this.data.image_ratio
+        x: realX,
+        y: realY,
+        width: realW,
+        height: realH
       };
     },
 
