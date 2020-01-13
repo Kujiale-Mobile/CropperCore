@@ -111,7 +111,7 @@ Component({
     _flag_cut_touch: false, //是否是拖动裁剪框
     _hypotenuse_length: 0, //双指触摸时斜边长度
     _flag_img_endtouch: false, //是否结束触摸
-    _flag_bright: true, //背景是否亮
+    _flag_bright: false, //背景是否亮
     origin_x: 0.5, //图片旋转中心
     origin_y: 0.5, //图片旋转中心
     _cut_animation: false, //是否开启图片和裁剪框过渡
@@ -935,7 +935,7 @@ Component({
           });
         }
         this.setCutCenter();
-      }, 1000)
+      }, 800)
       //清空之前的背景变化延迟函数并添加最新的
       clearTimeout(this.data.TIME_BG);
       this.data.TIME_BG = setTimeout(() => {
@@ -944,7 +944,7 @@ Component({
             _flag_bright: false
           });
         }
-      }, 2000)
+      }, 800)
     },
     //移动中
     _moveDuring() {
