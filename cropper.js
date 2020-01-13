@@ -204,11 +204,31 @@ Component({
         } else {
           ratio = value
         }
+        if (that.data.tempRatio === ratio) {
+          return
+        }
+        that.data.tempRatio = ratio;
+
         HEIGHT_PX = WIDTH_PX / ratio;
+        if (HEIGHT_PX > WIDTH_PX) {
+          if (that.data.img_height < that.data.validHeight) {
+            that.data.height = that.data.img_height;
+          } else {
+            that.data.height = that.data.validHeight;
+          }
+        } else {
+          that.data.height = HEIGHT_PX;
+        }
+
+        that.data.width = that.data.height * ratio
+
         that.setData({
           min_height: that.data.min_width / ratio,
+          _scale_x: 0.5,
+          _scale_y: 0.5
           //height: HEIGHT_PX
         })
+        that.setCutCenter();
       }
     }
   },
@@ -318,7 +338,7 @@ Component({
         cut_left: cut_left, //截取的框左边距
       }
       if (this.data.height < HEIGHT_PX) {
-        const ratio = HEIGHT_PX / this.data.height;
+        const ratio = WIDTH_PX / this.data.width;
         // 图片中心点到上裁剪框四边的
         const centerToCutTop = this.data._img_top - this.data.cut_top;
         const topOffset = centerToCutTop * ratio - centerToCutTop;
@@ -346,7 +366,7 @@ Component({
               _img_left: this.data._img_left - rightOffset
             })
           }
-        } else {
+        } else if (this.data.cut_left > cut_left) {
           if (this.data.cut_top > cut_top) {
             // 右上角
             Object.assign(updateData, {
