@@ -197,13 +197,16 @@ Component({
         that.setData(value);
       },
       cutFrameRatio: (value, that) => {
-        let ratio;
-        if (value < WIDTH_PX / that.data.validHeight) {
-          // 最夸张不能超过屏幕区域
-          ratio = WIDTH_PX / that.data.validHeight;
-        } else {
-          ratio = value
+        let ratio = value;
+        if (ratio < WIDTH_PX / that.data.validHeight) {
+          // 裁剪框宽高比 小于 有效范围，意味着更窄，此时高度到最大，计算宽度
+          HEIGHT_PX = that.data.validHeight;
+          WIDTH_PX = HEIGHT_PX * ratio;
+        } else if (ratio > 1) {
+          // 宽 > 高，则拉伸宽度到最大
+          WIDTH_PX = that.data.info.windowWidth * WIDTH_RPX / 750;
         }
+
         if (that.data.tempRatio === ratio) {
           return
         }
@@ -330,13 +333,27 @@ Component({
     setCutCenter() {
       let cut_top = (this.data.validHeight - HEIGHT_PX) * 0.5;
       let cut_left = (this.data.info.windowWidth - WIDTH_PX) * 0.5;
+      const updateData = {}
 
-      const updateData = {
-        height: HEIGHT_PX,
-        width: WIDTH_PX,
-        cut_top: cut_top, //截取的框上边距
-        cut_left: cut_left, //截取的框左边距
+      if (Math.round(HEIGHT_PX) >= this.data.validHeight) {
+        // 上下顶格的情况，做个 padding
+        const padding = 10;
+        const height = HEIGHT_PX - 2 * padding;
+        Object.assign(updateData, {
+          height,
+          width: height * WIDTH_PX / HEIGHT_PX,
+          cut_top: cut_top + padding,
+          cut_left,
+        });
+      } else {
+        Object.assign(updateData, {
+          height: HEIGHT_PX,
+          width: WIDTH_PX,
+          cut_top, 
+          cut_left,
+        })
       }
+      
       if (this.data.height < HEIGHT_PX) {
         const ratio = WIDTH_PX / this.data.width;
         // 图片中心点到上裁剪框四边的
@@ -865,7 +882,7 @@ Component({
       const scaledImageHeight = this.data.img_height * this.data.scale;
       const scaledImageWidth = this.data.img_width * this.data.scale;
       const topHeight = this.data.cut_top - (this.data._img_top - scaledImageHeight / 2);
-      const leftWidth = this.data.cut_left - (this._img_left - scaledImageWidth / 2);
+      const leftWidth = this.data.cut_left - (this.data._img_left - scaledImageWidth / 2);
 
       if (currentX > cutbox_left4 && currentX < cutbox_right4 && currentY > cutbox_top4 && currentY < cutbox_bottom4) {
         this._moveDuring();
