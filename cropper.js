@@ -179,9 +179,17 @@ Component({
         that.pushImg();
       },
       cut_top(value, that) {
+        if (Math.round(that.data.temp_cut_top) === Math.round(value)) {
+          return;
+        }
+        that.data.temp_cut_top = value;
         that._cutDetectionPosition();
       },
       cut_left(value, that) {
+        if (Math.round(that.data.temp_cut_left) === Math.round(value)) {
+          return;
+        }
+        that.data.temp_cut_left = value;
         that._cutDetectionPosition();
       },
       validHeight(value, that) {
