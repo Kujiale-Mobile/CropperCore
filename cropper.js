@@ -742,11 +742,16 @@ Component({
       const realY = parseInt(relativeY * this.data.image_ratio / this.data.scale);
       const realW = parseInt(this.data.width * this.data.image_ratio / this.data.scale);
       const realH = parseInt(this.data.height * this.data.image_ratio / this.data.scale);
+      const imageWidth = parseInt(this.data.img_width * this.data.image_ratio);
+      const imageHeight = parseInt(this.data.img_height * this.data.image_ratio);
+      
       return {
         x: realX,
         y: realY,
         width: realW,
         height: realH,
+        imageWidth,
+        imageHeight,
         initData: {
           scale: this.data.scale,
           _img_top: this.data._img_top,
