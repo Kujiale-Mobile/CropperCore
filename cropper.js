@@ -29,6 +29,13 @@ Component({
       type: Object,
     },
     /**
+     * 锁定裁剪框比例
+     */
+    'fixRatio': {
+      type: Boolean,
+      value: true
+    },
+    /**
      * 裁剪框禁止拖动
      */
     'disable_width': {
@@ -39,13 +46,7 @@ Component({
       type: Boolean,
       value: false
     },
-    /**
-     * 锁定裁剪框比例
-     */
-    'disable_ratio': {
-      type: Boolean,
-      value: true
-    },
+    
     'cut_top': {
       type: Number,
       value: null
@@ -119,23 +120,27 @@ Component({
     _img_left: wx.getSystemInfoSync().windowWidth / 2, //图片左边距
     _scale_x: 0.5, // 缩放中心
     _scale_y: 0.5, // 缩放中心
+    height: 0,
+    width: 0,
     watch: {
       //监听截取框宽高变化
       width(value, that) {
         if (value < that.data.min_width) {
           that.setData({
-            width: that.data.min_width
+            width: that.data.min_width,
+            height: that.data.min_width / that.data.ratio
           });
         }
-        that._computeCutSize();
+        //that._computeCutSize();
       },
       height(value, that) {
         if (value < that.data.min_height) {
           that.setData({
-            height: that.data.min_height
+            height: that.data.min_height,
+            width: that.data.ratio * that.data.min_height
           });
         }
-        that._computeCutSize();
+        //that._computeCutSize();
       },
       angle(value, that) {
         //停止居中裁剪框，继续修改图片位置
@@ -192,10 +197,17 @@ Component({
         that.setData(value);
       },
       cutFrameRatio: (value, that) => {
-        HEIGHT_PX = WIDTH_PX / value;
+        let ratio;
+        if (value < WIDTH_PX / that.data.validHeight) {
+          // 最夸张不能超过屏幕区域
+          ratio = WIDTH_PX / that.data.validHeight;
+        } else {
+          ratio = value
+        }
+        HEIGHT_PX = WIDTH_PX / ratio;
         that.setData({
-          min_height: that.data.min_width / value,
-          height: HEIGHT_PX
+          min_height: that.data.min_width / ratio,
+          //height: HEIGHT_PX
         })
       }
     }
@@ -207,22 +219,18 @@ Component({
     WIDTH_PX = this.data.info.windowWidth * WIDTH_RPX / 750;
     HEIGHT_PX = WIDTH_PX / this.data.cutFrameRatio;
 
-    this.data.height = HEIGHT_PX;
-    this.data.width = WIDTH_PX;
-    this.data.max_width = WIDTH_PX;
-    this.data.max_height = HEIGHT_PX;
-    this.data.min_width = MIN_FRAME_WIDTH_RPX * this.data.info.windowWidth / 750;
-    this.data.min_height = this.data.min_width / this.data.cutFrameRatio;
-    
     if (!this.data.validHeight) {
       this.data.validHeight = this.data.info.windowHeight;
     }
-    this.data._img_top = this.data.validHeight / 2;
 
-    this.setData({
-      height: HEIGHT_PX,
-      width: WIDTH_PX
-    })
+    this.data.height = HEIGHT_PX;
+    this.data.width = WIDTH_PX;
+    this.data.max_width = WIDTH_PX;
+    this.data.max_height = this.data.validHeight;
+    this.data.min_width = MIN_FRAME_WIDTH_RPX * this.data.info.windowWidth / 750;
+    this.data.min_height = this.data.min_width / this.data.cutFrameRatio;
+    
+    this.data._img_top = this.data.validHeight / 2;
 
     this.data.imgSrc && (this.data.imgSrc = this.data.imgSrc);
     //设置裁剪框大小>设置图片尺寸>绘制canvas
@@ -230,9 +238,7 @@ Component({
     //检查裁剪框是否在范围内
     this._cutDetectionPosition();
     //初始化完成
-    this.triggerEvent('load', {
-      cropper: this
-    });
+    this.setCutCenter();
   },
 
   methods: {
@@ -297,16 +303,6 @@ Component({
         cut_left: x
       });
     },
-    /**
-     * 设置剪裁框尺寸
-     */
-    setCutSize(w, h) {
-      this.setData({
-        width: w,
-        height: h
-      });
-      this._computeCutSize();
-    },
 
     /**
      * 设置剪裁框和图片居中
@@ -369,7 +365,6 @@ Component({
           scale: this.data.scale * ratio,
         })
       }
-
       this.setData(updateData);
     },
     _setCutCenter() {
@@ -743,7 +738,7 @@ Component({
     //裁剪框处理
     _cutTouchMove(e) {
       if (this.data._flag_cut_touch && this.data.MOVE_THROTTLE_FLAG) {
-        if (this.data.disable_ratio && (this.data.disable_width || this.data.disable_height)) return;
+        if (this.data.fixRatio && (this.data.disable_width || this.data.disable_height)) return;
         //节流
         this.data.MOVE_THROTTLE_FLAG = false;
         this._move_throttle();
@@ -756,7 +751,7 @@ Component({
             height = height <= this.data.max_height ? height >= this.data.min_height ? height : this.data.min_height : this.data.max_height;
           },
           size_inspect = () => {
-            if ((width > this.data.max_width || width < this.data.min_width || height > this.data.max_height || height < this.data.min_height) && this.data.disable_ratio) {
+            if ((width > this.data.max_width || width < this.data.min_width || height > this.data.max_height || height < this.data.min_height) && this.data.fixRatio) {
               size_correct();
               return false;
             } else {
@@ -768,7 +763,7 @@ Component({
         switch (this.data.CUT_START.corner) {
           case 1:
             width = this.data.CUT_START.width + this.data.CUT_START.x - e.touches[0].clientX;
-            if (this.data.disable_ratio) {
+            if (this.data.fixRatio) {
               height = width / (this.data.width / this.data.height)
             }
             if (!size_inspect()) return;
@@ -776,7 +771,7 @@ Component({
             break
           case 2:
             width = this.data.CUT_START.width + this.data.CUT_START.x - e.touches[0].clientX;
-            if (this.data.disable_ratio) {
+            if (this.data.fixRatio) {
               height = width / (this.data.width / this.data.height)
             }
             if (!size_inspect()) return;
@@ -785,7 +780,7 @@ Component({
             break
           case 3:
             width = this.data.CUT_START.width - this.data.CUT_START.x + e.touches[0].clientX;
-            if (this.data.disable_ratio) {
+            if (this.data.fixRatio) {
               height = width / (this.data.width / this.data.height)
             }
             if (!size_inspect()) return;
@@ -793,7 +788,7 @@ Component({
             break
           case 4:
             width = this.data.CUT_START.width - this.data.CUT_START.x + e.touches[0].clientX;
-            if (this.data.disable_ratio) {
+            if (this.data.fixRatio) {
               height = width / (this.data.width / this.data.height)
             }
             if (!size_inspect()) return;
@@ -921,6 +916,10 @@ Component({
     },
     _cutTouchEnd(e) {
       this._moveStop();
+      if (this.data._flag_cut_touch && !this.data.fixRatio) {
+        // 在长宽比非固定情况下，如果发生裁剪框拖动，则 ratio 重新计算
+        this.data.cutFrameRatio = this.data.width / this.data.height;
+      }
       this.data._flag_cut_touch = false;
     },
     //停止移动时需要做的操作
