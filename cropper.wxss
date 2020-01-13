@@ -1,5 +1,5 @@
 .image-cropper{
-  background:rgba(14, 13, 13,.8);
+  background:#000;
   position: fixed;
   top:0;
   left:0;
@@ -23,10 +23,10 @@
   pointer-events:none;
 }
 .bg_black{
-  background: rgba(0, 0, 0, 0.8)!important;
+  background: rgba(0, 0, 0, 0.5)!important;
 }
 .bg_gray{
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.0);
   transition-duration: .35s;
 }
 .content>.content_top{
