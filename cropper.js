@@ -391,7 +391,7 @@ Component({
               _img_left: this.data._img_left - rightOffset
             })
           }
-        } else if (this.data.cut_left > cut_left) {
+        } else if (this.data.cut_left + this.data.width < cut_left + WIDTH_PX) {
           if (this.data.cut_top > cut_top) {
             // 右上角
             Object.assign(updateData, {
