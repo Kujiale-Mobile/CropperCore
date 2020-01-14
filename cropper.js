@@ -362,8 +362,8 @@ Component({
         })
       }
       
-      if (this.data.height < HEIGHT_PX) {
-        const ratio = WIDTH_PX / this.data.width;
+      const ratio = WIDTH_PX / this.data.width;
+      if (this.data.height < HEIGHT_PX && (this.data.scale * ratio < this.data.max_scale)) {
         // 图片中心点到上裁剪框四边的
         const centerToCutTop = this.data._img_top - this.data.cut_top;
         const topOffset = centerToCutTop * ratio - centerToCutTop;
