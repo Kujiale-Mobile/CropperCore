@@ -615,12 +615,12 @@ Component({
         img_width = this.data.img_height;
         img_height = this.data.img_width;
       }
-      /* if (img_width * scale < this.data.width) {
+      if (img_width * scale < this.data.width) {
         scale = this.data.width / img_width;
       }
       if (img_height * scale < this.data.height) {
         scale = Math.max(scale, this.data.height / img_height);
-      } */
+      }
       this._imgMarginDetectionPosition(scale);
     },
     _setData(obj) {
