@@ -46,7 +46,7 @@ Component({
       type: Boolean,
       value: false
     },
-    
+
     'cut_top': {
       type: Number,
       value: null
@@ -101,6 +101,7 @@ Component({
   data: {
     el: 'image-cropper', //暂时无用
     info: wx.getSystemInfoSync(),
+    CUT_START: {},
     MOVE_THROTTLE: null, //触摸移动节流settimeout
     MOVE_THROTTLE_FLAG: true, //节流标识
     TIME_BG: null, //背景变暗延时函数
@@ -222,8 +223,9 @@ Component({
 
         HEIGHT_PX = WIDTH_PX / ratio;
         if (HEIGHT_PX > WIDTH_PX) {
-          if (that.data.img_height < that.data.validHeight) {
-            that.data.height = that.data.img_height;
+          if (that.data.img_height * that.data.scale < that.data.validHeight) {
+            // 不要超过图片高度
+            that.data.height = that.data.img_height * that.data.scale;
           } else {
             that.data.height = that.data.validHeight;
           }
@@ -260,7 +262,7 @@ Component({
     this.data.max_height = this.data.validHeight;
     this.data.min_width = MIN_FRAME_WIDTH_RPX * this.data.info.windowWidth / 750;
     this.data.min_height = this.data.min_width / this.data.cutFrameRatio;
-    
+
     this.data._img_top = this.data.validHeight / 2;
 
     this.data.imgSrc && (this.data.imgSrc = this.data.imgSrc);
@@ -357,11 +359,11 @@ Component({
         Object.assign(updateData, {
           height: HEIGHT_PX,
           width: WIDTH_PX,
-          cut_top, 
+          cut_top,
           cut_left,
         })
       }
-      
+
       const ratio = WIDTH_PX / this.data.width;
       if (this.data.height < HEIGHT_PX && (this.data.scale * ratio < this.data.max_scale)) {
         // 图片中心点到上裁剪框四边的
@@ -377,35 +379,41 @@ Component({
         const centerToCutRight = this.data.cut_left + this.data.width - this.data._img_left;
         const rightOffset = centerToCutRight * ratio - centerToCutRight;
 
-        if (this.data.cut_left > cut_left) {
-          if (this.data.cut_top > cut_top) {
-            // 左上角
-            Object.assign(updateData, {
-              _img_top: this.data._img_top - bottomOffset,
-              _img_left: this.data._img_left - rightOffset
-            })
-          } else {
+        switch (this.data.CUT_START['corner']) {
+          case 1:
             // 左下角
             Object.assign(updateData, {
               _img_top: this.data._img_top + topOffset,
               _img_left: this.data._img_left - rightOffset
             })
-          }
-        } else if (this.data.cut_left + this.data.width < cut_left + WIDTH_PX) {
-          if (this.data.cut_top > cut_top) {
+            break;
+          case 2:
+            // 左上角
+            Object.assign(updateData, {
+              _img_top: this.data._img_top - bottomOffset,
+              _img_left: this.data._img_left - rightOffset
+            })
+            break;
+          case 3:
             // 右上角
             Object.assign(updateData, {
               _img_top: this.data._img_top - bottomOffset,
               _img_left: this.data._img_left + leftOffset
             })
-          } else {
+            break;
+          case 4:
             // 右下角
             Object.assign(updateData, {
               _img_top: this.data._img_top + topOffset,
               _img_left: this.data._img_left + leftOffset
             })
-          }
+            break;
+          default:
+            break;
         }
+
+        this.data.CUT_START['corner'] = 0;
+
         Object.assign(updateData, {
           scale: this.data.scale * ratio,
         })
@@ -455,7 +463,10 @@ Component({
       wx.getImageInfo({
         src: this.data.imgSrc,
         success: (res) => {
-          const {height, width} = res;
+          const {
+            height,
+            width
+          } = res;
           const updateData = {}
           if (width > height) {
             // 高撑满
@@ -769,7 +780,7 @@ Component({
       const realH = parseInt(this.data.height * this.data.image_ratio / this.data.scale);
       const imageWidth = parseInt(this.data.img_width * this.data.image_ratio);
       const imageHeight = parseInt(this.data.img_height * this.data.image_ratio);
-      
+
       return {
         x: realX,
         y: realY,
@@ -962,6 +973,8 @@ Component({
           _scale_x: (leftWidth + this.data.width) / scaledImageWidth,
           _scale_y: topHeight / scaledImageHeight
         })
+      } else {
+        this.data.CUT_START['corner'] = 0;
       }
     },
     _cutTouchEnd(e) {
