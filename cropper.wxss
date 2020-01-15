@@ -23,7 +23,7 @@
   pointer-events:none;
 }
 .bg_black{
-  background: rgba(0, 0, 0, 0.7)!important;
+  background: rgba(0, 0, 0, 0.8)!important;
 }
 .bg_gray{
   background: rgba(0, 0, 0, 0.0);
@@ -42,7 +42,7 @@
   box-sizing:border-box;
   position: relative;
   transition-duration: .3s;
-  box-shadow: 0 0 4px 0 rgba(0,0,0,0.50);
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.50);
 }
 .content_middle_right{
   flex: auto;

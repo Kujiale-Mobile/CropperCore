@@ -5,14 +5,18 @@
         <view class='content_middle' style="height:{{height}}px;">
           <view class='content_middle_left bg_gray {{_flag_bright?"":"bg_black"}}' style="width:{{cut_left}}px;transition-property:{{_cut_animation?'':'background'}}"></view>
           <view class='content_middle_middle' style="width:{{width}}px;height:{{height}}px;transition-duration: .5s;transition-property:{{_cut_animation?'':'background'}}; outline: #fff solid 2rpx; outline-offset: -2rpx;">
+            <view class="border border-top-left" style="box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.5);"></view>
+            <view class="border border-top-right" style="box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.5);"></view>
+            <view class="border border-right-top" style="box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.5);"></view>
+            <view class="border border-right-bottom" style="box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.5);"></view>
+            <view class="border border-bottom-right" style="box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.5);"></view>
+            <view class="border border-bottom-left" style="box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.5);"></view>
+            <view class="border border-left-bottom" style="box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.5);"></view>
+            <view class="border border-left-top" style="box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.5);"></view>
             <view class="border border-top-left"></view>
             <view class="border border-top-right"></view>
-            <view class="border border-right-top"></view>
-            <view class="border border-right-bottom"></view>
-            <view class="border border-bottom-right"></view>
             <view class="border border-bottom-left"></view>
-            <view class="border border-left-bottom"></view>
-            <view class="border border-left-top"></view>
+            <view class="border border-right-bottom"></view>
           </view>
           <view class='content_middle_right bg_gray {{_flag_bright?"":"bg_black"}}' style="transition-property:{{_cut_animation?'':'background'}}"></view>
         </view>
