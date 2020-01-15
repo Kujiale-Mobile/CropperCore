@@ -261,7 +261,9 @@ Component({
 
         HEIGHT_PX = WIDTH_PX / ratio;
 
-        if (!that.data.fixRatio) {
+        if (that.data.actionChangedScale) {
+          // 如果是挪动产生的行为不进行下面操作
+          that.data.actionChangedScale = false;
           return
         }
 
@@ -1046,6 +1048,7 @@ Component({
       this._moveStop();
       if (this.data._flag_cut_touch && !this.data.fixRatio) {
         // 在长宽比非固定情况下，如果发生裁剪框拖动，则 ratio 重新计算
+        this.data.actionChangedScale = true;
         this.data.cutFrameRatio = this.data.width / this.data.height;
       }
       this.data._flag_cut_touch = false;
