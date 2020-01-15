@@ -428,17 +428,23 @@ Component({
         const centerToCutBottom = this.data.cut_top + this.data.height - this.data._img_top;
         let bottomOffset = centerToCutBottom * ratio - centerToCutBottom;
 
+        const centerToCutLeft = this.data._img_left - this.data.cut_left;
+        let leftOffset = centerToCutLeft * ratio - centerToCutLeft;
+
+        const centerToCutRight = this.data.cut_left + this.data.width - this.data._img_left;
+        let rightOffset = centerToCutRight * ratio - centerToCutRight;
+
         if (!this.data.fixRatio) {
           // 自由裁剪下，纵坐标的移动需要加偏移量
           topOffset = topOffset + cut_top - this.data.cut_top;
           bottomOffset = this.data.cut_top - cut_top + bottomOffset;
+
+          if (Math.round(HEIGHT_PX) >= this.data.validHeight) {
+            // 高最大时，自由裁剪情况下，加上左右偏移量，此处未考虑在高度非最大时，自动放到到最大后，既要考虑缩放产生的偏移也要考虑挪动偏移的情况
+            leftOffset = leftOffset + cut_left - this.data.cut_left;
+            rightOffset = this.data.cut_left - cut_left + rightOffset;
+          }
         }
-
-        const centerToCutLeft = this.data._img_left - this.data.cut_left;
-        const leftOffset = centerToCutLeft * ratio - centerToCutLeft;
-
-        const centerToCutRight = this.data.cut_left + this.data.width - this.data._img_left;
-        const rightOffset = centerToCutRight * ratio - centerToCutRight;
 
         switch (this.data.CUT_START['corner']) {
           case 1:
