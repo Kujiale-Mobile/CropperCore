@@ -1,5 +1,4 @@
-// 固定的宽度，根据比例计算高度
-const MIN_FRAME_WIDTH_RPX = 120;
+const MIN_FRAME_SIZE_RPX = 120;
 const WIDTH_RPX = 670;
 let WIDTH_PX = 0;
 let HEIGHT_PX = 0;
@@ -126,22 +125,60 @@ Component({
     watch: {
       //监听截取框宽高变化
       width(value, that) {
-        if (value < that.data.min_width) {
+        if (Math.round(that.data.temp_width) === Math.round(value)) {
+          return;
+        }
+        that.data.temp_width = value;
+        if (Number.isNaN(value)) {
+          that.setData({
+            width: that.data.max_width,
+          })
+        } else if (value < that.data.min_width) {
           that.setData({
             width: that.data.min_width,
-            height: that.data.min_width / that.data.ratio
           });
         }
         //that._computeCutSize();
       },
       height(value, that) {
-        if (value < that.data.min_height) {
+        if (Math.round(that.data.temp_height) === Math.round(value)) {
+          return;
+        }
+        that.data.temp_height = value;
+        if (Number.isNaN(value)) {
           that.setData({
-            height: that.data.min_height,
+            height: that.data.max_height
+          })
+        } else if (value < that.data.min_height) {
+          that.setData({
             width: that.data.ratio * that.data.min_height
           });
         }
         //that._computeCutSize();
+      },
+      _img_left(value, that) {
+        // 容错处理
+        if (Math.round(that.data.temp_img_left) === Math.round(value)) {
+          return;
+        }
+        that.data.temp_img_left = value;
+        if (Number.isNaN(value)) {
+          that.setData({
+            _img_left: wx.getSystemInfoSync().windowWidth / 2
+          })
+        }
+      },
+      _img_top(value, that) {
+        // 容错处理
+        if (Math.round(that.data.temp_img_top) === Math.round(value)) {
+          return;
+        }
+        that.data.temp_img_top = value;
+        if (Number.isNaN(value)) {
+          that.setData({
+            _img_top: wx.getSystemInfoSync().windowHeight / 2
+          })
+        }
       },
       angle(value, that) {
         //停止居中裁剪框，继续修改图片位置
@@ -207,19 +244,20 @@ Component({
       },
       cutFrameRatio: (value, that) => {
         let ratio = value;
-        if (ratio < WIDTH_PX / that.data.validHeight) {
-          // 裁剪框宽高比 小于 有效范围，意味着更窄，此时高度到最大，计算宽度
-          HEIGHT_PX = that.data.validHeight;
-          WIDTH_PX = HEIGHT_PX * ratio;
-        } else if (ratio > 1) {
-          // 宽 > 高，则拉伸宽度到最大
-          WIDTH_PX = that.data.info.windowWidth * WIDTH_RPX / 750;
+        if (!value) {
+          ratio = 1;
         }
-
         if (that.data.tempRatio === ratio) {
           return
         }
         that.data.tempRatio = ratio;
+
+        WIDTH_PX = that.data.info.windowWidth * WIDTH_RPX / 750;
+        if (ratio < WIDTH_PX / that.data.validHeight) {
+          // 裁剪框宽高比 小于 有效范围，意味着更窄，此时高度到最大，计算宽度
+          HEIGHT_PX = that.data.validHeight;
+          WIDTH_PX = HEIGHT_PX * ratio;
+        }
 
         HEIGHT_PX = WIDTH_PX / ratio;
         if (HEIGHT_PX > WIDTH_PX) {
@@ -236,7 +274,6 @@ Component({
         that.data.width = that.data.height * ratio
 
         that.setData({
-          min_height: that.data.min_width / ratio,
           _scale_x: 0.5,
           _scale_y: 0.5
           //height: HEIGHT_PX
@@ -265,8 +302,14 @@ Component({
     this.data.width = WIDTH_PX;
     this.data.max_width = WIDTH_PX;
     this.data.max_height = this.data.validHeight;
-    this.data.min_width = MIN_FRAME_WIDTH_RPX * this.data.info.windowWidth / 750;
-    this.data.min_height = this.data.min_width / this.data.cutFrameRatio;
+    // 限定短边最小值
+    if (HEIGHT_PX > WIDTH_PX) {
+      this.data.min_width = MIN_FRAME_SIZE_RPX * this.data.info.windowWidth / 750;
+      this.data.min_height = this.data.min_width / this.data.cutFrameRatio;
+    } else {
+      this.data.min_height = MIN_FRAME_SIZE_RPX * this.data.info.windowWidth / 750;
+      this.data.min_width = this.data.min_height * this.data.cutFrameRatio;
+    }
 
     this.data._img_top = this.data.validHeight / 2;
 
