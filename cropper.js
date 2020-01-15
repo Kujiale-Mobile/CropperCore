@@ -260,6 +260,11 @@ Component({
         }
 
         HEIGHT_PX = WIDTH_PX / ratio;
+
+        if (!that.data.fixRatio) {
+          return
+        }
+
         if (HEIGHT_PX > WIDTH_PX) {
           if (that.data.img_height * that.data.scale < that.data.validHeight) {
             // 不要超过图片高度
@@ -416,10 +421,16 @@ Component({
       if (this.data.height < HEIGHT_PX && (this.data.scale * ratio < this.data.max_scale)) {
         // 图片中心点到上裁剪框四边的
         const centerToCutTop = this.data._img_top - this.data.cut_top;
-        const topOffset = centerToCutTop * ratio - centerToCutTop;
+        let topOffset = centerToCutTop * ratio - centerToCutTop;
 
         const centerToCutBottom = this.data.cut_top + this.data.height - this.data._img_top;
-        const bottomOffset = centerToCutBottom * ratio - centerToCutBottom;
+        let bottomOffset = centerToCutBottom * ratio - centerToCutBottom;
+
+        if (!this.data.fixRatio) {
+          // 自由裁剪下，纵坐标的移动需要加偏移量
+          topOffset = topOffset + cut_top - this.data.cut_top;
+          bottomOffset = this.data.cut_top - cut_top + bottomOffset;
+        }
 
         const centerToCutLeft = this.data._img_left - this.data.cut_left;
         const leftOffset = centerToCutLeft * ratio - centerToCutLeft;
