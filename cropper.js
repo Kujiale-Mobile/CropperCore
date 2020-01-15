@@ -307,7 +307,7 @@ Component({
 
     this.data.height = HEIGHT_PX;
     this.data.width = WIDTH_PX;
-    this.data.max_width = WIDTH_PX;
+    this.data.max_width = this.data.info.windowWidth * WIDTH_RPX / 750;
     this.data.max_height = this.data.validHeight;
     // 限定短边最小值
     if (HEIGHT_PX > WIDTH_PX) {
@@ -420,7 +420,7 @@ Component({
       }
 
       const ratio = WIDTH_PX / this.data.width;
-      if (this.data.height < HEIGHT_PX && (this.data.scale * ratio < this.data.max_scale)) {
+      if (this.data.scale * ratio < this.data.max_scale) {
         // 图片中心点到上裁剪框四边的
         const centerToCutTop = this.data._img_top - this.data.cut_top;
         let topOffset = centerToCutTop * ratio - centerToCutTop;
@@ -1050,6 +1050,7 @@ Component({
         // 在长宽比非固定情况下，如果发生裁剪框拖动，则 ratio 重新计算
         this.data.actionChangedScale = true;
         this.data.cutFrameRatio = this.data.width / this.data.height;
+        this.triggerEvent('ratioChanged', this.data.cutFrameRatio);
       }
       this.data._flag_cut_touch = false;
     },
