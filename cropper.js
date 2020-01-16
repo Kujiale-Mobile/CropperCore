@@ -975,9 +975,17 @@ Component({
           corner: 4
         }
         // 右下
+        let _scale_x = leftWidth / scaledImageWidth;
+        let _scale_y = topHeight / scaledImageHeight;
+        if (!_scale_x && !_scale_y) {
+          // 解决在 iphone 6/7/8 上的一个神奇bug
+          // 当从 0，0 缩放中心放大时，会让图片显示过于偏下，但数据又一切正常
+          _scale_x = 0.01;
+          _scale_y = 0.01;
+        }
         this.setData({
-          _scale_x: leftWidth / scaledImageWidth,
-          _scale_y: topHeight / scaledImageHeight
+          _scale_x,
+          _scale_y
         })
       } else if (currentX > cutbox_left3 && currentX < cutbox_right3 && currentY > cutbox_top3 && currentY < cutbox_bottom3) {
         this._moveDuring();
