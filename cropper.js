@@ -529,14 +529,14 @@ Component({
           const updateData = {}
           if (width > height) {
             // 高撑满
-            this.data.image_ratio = res.height / HEIGHT_PX;
+            that.data.image_ratio = res.height / HEIGHT_PX;
             Object.assign(updateData, {
               img_height: HEIGHT_PX,
               img_width: res.width * HEIGHT_PX / res.height,
             })
           } else {
             // 框撑满
-            this.data.image_ratio = res.width / WIDTH_PX;
+            that.data.image_ratio = res.width / WIDTH_PX;
             Object.assign(updateData, {
               img_width: WIDTH_PX,
               img_height: res.height * WIDTH_PX / res.width,
@@ -544,15 +544,15 @@ Component({
           }
 
           that.setData(updateData);
-          if (this.data.limit_move) {
+          if (that.data.limit_move) {
             //限制移动，不留空白处理
-            this._imgMarginDetectionScale();
+            that._imgMarginDetectionScale();
           }
-          this.triggerEvent('imageLoaded', true);
+          that.triggerEvent('imageLoaded', true);
         },
         fail: (err) => {
-          this.triggerEvent('imageLoaded', false);
-          this.setData({
+          that.triggerEvent('imageLoaded', false);
+          that.setData({
             imgSrc: ''
           });
         }
@@ -851,7 +851,8 @@ Component({
           _img_top: this.data._img_top,
           _img_left: this.data._img_left,
           img_height: this.data.img_height,
-          img_width: this.data.img_width
+          img_width: this.data.img_width,
+          image_ratio: this.data.image_ratio,
         }
       };
     },
