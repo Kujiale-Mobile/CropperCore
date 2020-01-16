@@ -214,6 +214,10 @@ Component({
         }
       },
       imgSrc(value, that) {
+        if (that.data.temp_img_src === value) {
+          return;
+        }
+        that.data.temp_img_src = value;
         that.pushImg();
       },
       cut_top(value, that) {
@@ -310,13 +314,8 @@ Component({
     this.data.max_width = this.data.info.windowWidth * WIDTH_RPX / 750;
     this.data.max_height = this.data.validHeight;
     // 限定短边最小值
-    if (HEIGHT_PX > WIDTH_PX) {
-      this.data.min_width = MIN_FRAME_SIZE_RPX * this.data.info.windowWidth / 750;
-      this.data.min_height = this.data.min_width / this.data.cutFrameRatio;
-    } else {
-      this.data.min_height = MIN_FRAME_SIZE_RPX * this.data.info.windowWidth / 750;
-      this.data.min_width = this.data.min_height * this.data.cutFrameRatio;
-    }
+    this.data.min_width = MIN_FRAME_SIZE_RPX * this.data.info.windowWidth / 750;
+    this.data.min_height = MIN_FRAME_SIZE_RPX * this.data.info.windowWidth / 750;
 
     this.data._img_top = this.data.validHeight / 2;
 
@@ -516,15 +515,7 @@ Component({
     /**
      * 加载（更换）图片
      */
-    pushImg(src) {
-      if (src) {
-        this.setData({
-          imgSrc: src
-        });
-        //发现是手动赋值直接返回，交给watch处理
-        return;
-      }
-
+    pushImg() {
       // getImageInfo接口传入 src: '' 会导致内存泄漏
       const that = this;
       if (!this.data.imgSrc) return;
@@ -552,19 +543,15 @@ Component({
             })
           }
 
-          //图片非本地路径需要换成本地路径
-          if (this.data.imgSrc.search(/tmp/) == -1) {
-            Object.assign(updateData, {
-              imgSrc: res.path
-            })
-          }
           that.setData(updateData);
           if (this.data.limit_move) {
             //限制移动，不留空白处理
             this._imgMarginDetectionScale();
           }
+          this.triggerEvent('imageLoaded', true);
         },
         fail: (err) => {
+          this.triggerEvent('imageLoaded', false);
           this.setData({
             imgSrc: ''
           });
