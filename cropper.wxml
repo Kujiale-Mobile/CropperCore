@@ -22,6 +22,6 @@
         </view>
         <view class='content_bottom bg_gray {{_flag_bright?"":"bg_black"}}' style="transition-property:{{_cut_animation?'':'background'}}"></view>
       </view>
-      <image bindload="imageLoad" bindtouchstart="_start" bindtouchmove="_move" bindtouchend="_end" style="width:{{img_width ? img_width + 'px' : 'auto'}};height:{{img_height ? img_height + 'px' : 'auto'}};transform:translate3d({{_img_left-img_width/2}}px,{{_img_top-img_height/2}}px,0) scale({{scale}}) rotate({{angle}}deg);transition-duration:{{_cut_animation?.5:0}}s; transform-origin: {{_scale_x}} {{_scale_y}} 0;" class='img' src='{{imgSrc}}'></image>
+      <image bindtouchstart="_start" bindtouchmove="_move" bindtouchend="_end" style="width:{{img_width ? img_width + 'px' : 'auto'}};height:{{img_height ? img_height + 'px' : 'auto'}};transform:translate3d({{_img_left-img_width/2}}px,{{_img_top-img_height/2}}px,0) scale({{scale}}) rotate({{angle}}deg);transition-duration:{{_cut_animation?.5:0}}s; transform-origin: {{_scale_x}} {{_scale_y}} 0;" class='img' src='{{imgSrc}}'></image>
     </view>
   </view>

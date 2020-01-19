@@ -122,6 +122,7 @@ Component({
     _scale_y: 0.5, // 缩放中心
     height: 0,
     width: 0,
+    image_ratio: 1,
     watch: {
       //监听截取框宽高变化
       width(value, that) {
@@ -558,11 +559,7 @@ Component({
         }
       });
     },
-    imageLoad(e) {
-      setTimeout(() => {
-        this.triggerEvent('imageload', this.data.imageObject);
-      }, 1000)
-    },
+
     /**
      * 设置图片放大缩小
      */
