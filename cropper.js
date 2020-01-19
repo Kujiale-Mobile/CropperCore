@@ -251,7 +251,20 @@ Component({
         that._setCutCenter();
       },
       initShow(value, that) {
-        that.setData(value);
+        if (!value || typeof value !== 'object') {
+          return;
+        }
+        const updateData = {};
+        if (that.data.temp_init_show) {
+          for (const key in value) {
+            if (that.data.temp_init_show[key] !== value[key]) {
+              updateData[key] = value[key];
+            }
+          }
+        }
+        that.data.temp_init_show = value;
+
+        that.setData(updateData);
       },
       cutFrameRatio: (value, that) => {
         let ratio = value;
