@@ -219,6 +219,12 @@ Component({
           return;
         }
         that.data.temp_img_src = value;
+        if (that.data.validHeight) {
+          // 如果是图片更新，则重制 top 和 left 和 scale 信息
+          that.data._img_top = that.data.validHeight / 2;
+          that.data._img_left = wx.getSystemInfoSync().windowWidth / 2;
+          that.data.scale = 1;
+        }
         that.pushImg();
       },
       cut_top(value, that) {
